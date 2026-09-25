@@ -16,43 +16,40 @@ export const DUBLIN_CORE_ELEMENTS = [
   { key: 'dc:rights', label: 'dc:rights', description: 'Derechos' },
 ]
 
-const IDENTIFIER_PREFIXES = {
-  lccn: 'LCCN',
-  oclc: 'OCLC',
-}
-
 function toW3CDate(year) {
   return year ? String(year) : null
 }
 
+function unique(list) {
+  return [...new Set(list.filter(Boolean))]
+}
+
 function buildIdentifiers(book) {
-  const identifiers = book.isbns.map((isbn) => `ISBN:${isbn}`)
-  if (book.oclcs?.length) {
-    identifiers.push(...book.oclcs.map((id) => `OCLC:${id}`))
-  }
-  if (book.lccns?.length) {
-    identifiers.push(...book.lccns.map((id) => `LCCN:${id}`))
-  }
-  if (book.id) {
-    identifiers.push(book.id)
-  }
+  const primaryIsbn =
+    book.isbns.find((isbn) => isbn.length === 13) ??
+    book.isbns.find((isbn) => isbn.length === 10)
+  const identifiers = []
+  if (primaryIsbn) identifiers.push(`ISBN:${primaryIsbn}`)
+  if (book.oclcs?.[0]) identifiers.push(`OCLC:${book.oclcs[0]}`)
+  if (book.lccns?.[0]) identifiers.push(`LCCN:${book.lccns[0]}`)
+  if (book.id) identifiers.push(book.id)
   return identifiers.length ? identifiers : null
 }
 
 export function toDublinCore(book) {
   return {
     'dc:title': book.title ?? null,
-    'dc:creator': book.authors.length ? book.authors : null,
-    'dc:subject': book.subjects.length ? book.subjects : null,
+    'dc:creator': unique(book.authors).slice(0, 10) || null,
+    'dc:subject': unique(book.subjects).slice(0, 20) || null,
     'dc:description': book.description ?? null,
-    'dc:publisher': book.publishers.length ? book.publishers : null,
+    'dc:publisher': unique(book.publishers).slice(0, 10) || null,
     'dc:contributor': null,
     'dc:date': toW3CDate(book.firstPublishYear),
     'dc:type': 'Libro (Text)',
     'dc:format': book.pageCount ? `${book.pageCount} páginas` : null,
     'dc:identifier': buildIdentifiers(book),
     'dc:source': book.coverUrl ?? null,
-    'dc:language': book.languages.length ? book.languages : null,
+    'dc:language': unique(book.languages) || null,
     'dc:relation': book.url ?? null,
     'dc:coverage': null,
     'dc:rights': 'Acceso abierto / Dominio público (Open Library)',
@@ -65,5 +62,3 @@ export function toDublinCoreList(books) {
     dc: toDublinCore(book),
   }))
 }
-
-export { IDENTIFIER_PREFIXES }
