@@ -4,10 +4,13 @@ import { searchBooks } from './services/openLibrary.js'
 import SearchForm from './components/SearchForm.jsx'
 import ResultsTable from './components/ResultsTable.jsx'
 import BookDetail from './components/BookDetail.jsx'
+import ThemeToggle from './components/ThemeToggle.jsx'
+import { useTheme } from './hooks/useTheme.js'
 import downloadJson from './utils/exportJson.js'
 import { toDublinCoreList } from './utils/dublinCore.js'
 
 function App() {
+  const { theme, toggleTheme } = useTheme()
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState(null)
   const [error, setError] = useState(null)
@@ -47,6 +50,9 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
+        <div className="header-row">
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        </div>
         <h1>Buscador de libros</h1>
         <p>
           Búsqueda de metadatos de libros mediante la API pública de{' '}
