@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { SEARCH_FIELDS } from '../services/openLibrary.js'
 
-export const SOURCES = [
+const SOURCES = [
   { value: 'open-library', label: 'Open Library' },
   { value: 'gutenberg', label: 'Project Gutenberg' },
 ]
