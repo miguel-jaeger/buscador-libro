@@ -54,20 +54,35 @@ async function fetchDetail(id) {
   })
   if (!response.ok) throw new Error(`HTTP ${response.status} para el libro ${id}`)
   const xml = await response.text()
-  const entry = xml.match(/<entry>([\s\S]*?)<\/entry>/)
-  if (!entry) return { downloads: [], cover: null, subjects: [], bookshelves: [] }
+  const entries = xml.match(/<entry>([\s\S]*?)<\/entry>/g) ?? []
 
-  const entryXml = entry[1]
-  const links = parseLinks(entryXml)
-  const acquisitions = links.filter((l) => l.rel === 'http://opds-spec.org/acquisition')
-  const subjects = links
-    .filter((l) => l.rel === 'related' && l.href.includes('/ebooks/subject/'))
-    .map((l) => l.title?.replace(/^On\s+/, '').replace(/\.$/, ''))
-    .filter(Boolean)
-  const bookshelves = links
-    .filter((l) => l.rel === 'related' && l.href.includes('/ebooks/bookshelf/'))
-    .map((l) => l.title?.replace(/^In\s+/, ''))
-    .filter(Boolean)
+  const acquisitions = []
+  const subjects = []
+  const bookshelves = []
+  let cover = null
+
+  for (const entryTag of entries) {
+    const entryXml = entryTag.slice(7, -8)
+    const links = parseLinks(entryXml)
+
+    for (const l of links) {
+      if (l.rel === 'http://opds-spec.org/acquisition') acquisitions.push(l)
+      else if (l.rel === 'related' && l.href.includes('/ebooks/subject/')) {
+        const cleaned = l.title?.replace(/^On\s+/, '').replace(/\.$/, '')
+        if (cleaned) subjects.push(cleaned)
+      } else if (l.rel === 'related' && l.href.includes('/ebooks/bookshelf/')) {
+        const cleaned = l.title?.replace(/^In\s+/, '')
+        if (cleaned) bookshelves.push(cleaned)
+      }
+    }
+
+    if (!cover) {
+      cover =
+        links.find((l) => l.rel === 'http://opds-spec.org/image')?.href ??
+        links.find((l) => l.rel === 'http://opds-spec.org/image/thumbnail')?.href ??
+        null
+    }
+  }
 
   return {
     downloads: acquisitions.map((l) => ({
@@ -76,7 +91,7 @@ async function fetchDetail(id) {
       href: l.href,
       length: l.length ? Number(l.length) : null,
     })),
-    cover: links.find((l) => l.rel === 'http://opds-spec.org/image')?.href ?? null,
+    cover,
     subjects,
     bookshelves,
   }
@@ -144,7 +159,7 @@ export function gutenbergProxy() {
     name: 'gutenberg-opds-proxy',
     apply: 'serve',
     configureServer(server) {
-      server.middlewares.use('/api/gutenberg', async (req, res, next) => {
+      server.middlewares.use('/api/gutenberg', async (req, res, _next) => {
         const url = new URL(req.url, 'http://localhost')
         const query = url.searchParams.get('search')
 
@@ -170,4 +185,4 @@ export function gutenbergProxy() {
   }
 }
 
-export { formatLabel }
+export { formatLabel, handleRequest, parseLinks }
