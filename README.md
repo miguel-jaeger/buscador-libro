@@ -116,6 +116,7 @@ Existen **dos formatos** de salida, ambos descargan un fichero `.json`:
 | Tema claro/oscuro | `useTheme` / `ThemeToggle`     | `src/hooks/useTheme.js`, `src/components/ThemeToggle.jsx` |
 | Búsqueda Gutenberg | `searchGutenberg(query)`     | `src/services/gutenberg.js`    |
 | Proxy Gutenberg    | `gutenbergProxy()` (OPDS)      | `gutenberg-proxy.js`, `vite.config.js` |
+| Proxy Vercel       | `api/gutenberg.js` (Function)  | `api/gutenberg.js`, `vercel.json` |
 | Descarga        | `DownloadMenu` en tabla / modal   | `src/components/ResultsTable.jsx`, `src/components/BookDetail.jsx` |
 
 ## Puesta en marcha
@@ -128,10 +129,15 @@ npm run dev
 Abrir `http://localhost:5173` en el navegador.
 
 > **Nota sobre CORS:** Project Gutenberg se consulta a través de su **catálogo OPDS**
-> (`https://www.gutenberg.org/ebooks/search.opds/?query=...`). El servidor de desarrollo
-> de Vite incluye un proxy (`/api/gutenberg`) que consulta Gutenberg desde el servidor,
-> por lo que las peticiones del navegador no sufren bloqueo CORS. Si el proxy no está
-> disponible (p. ej. `vite preview`), la app cae a la API pública de
+> (`https://www.gutenberg.org/ebooks/search.opds/?query=...`). Tanto en desarrollo como en
+> producción la petición pasa por un **proxy** que consulta Gutenberg desde el servidor, por
+> lo que el navegador no sufre bloqueo CORS:
+>
+> - **Desarrollo** (`npm run dev`): middleware de Vite en `/api/gutenberg`
+>   (`gutenberg-proxy.js`).
+> - **Producción (Vercel)**: Serverless Function en `api/gutenberg.js` (misma lógica OPDS).
+>
+> Si ningún proxy está disponible (p. ej. otro hosting estático), la app cae a la API de
 > [Gutendex](https://gutendex.com/) como alternativa.
 
 ## Scripts
