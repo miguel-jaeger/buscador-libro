@@ -41,6 +41,7 @@ function buildParams(field, query) {
 function normalize(doc) {
   return {
     id: doc.key,
+    source: 'open-library',
     title: doc.title,
     authors: doc.author_name ?? [],
     firstPublishYear: doc.first_publish_year ?? null,
@@ -58,6 +59,7 @@ function normalize(doc) {
     coverUrl: doc.cover_i
       ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
       : null,
+    downloadLinks: doc.ebook_access && doc.ebook_access !== 'none' ? [] : [],
     url: doc.key ? `https://openlibrary.org${doc.key}` : null,
   }
 }

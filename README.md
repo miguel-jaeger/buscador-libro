@@ -21,6 +21,12 @@ completo de metadatos.
   Dublin Core (`dc:title`, `dc:creator`, `dc:subject`, `dc:date`, etc.).
 - **Modo claro / oscuro**: botón en el encabezado que alterna el tema. La selección se
   guarda en `localStorage` y el tema predeterminado sigue la preferencia del sistema.
+- **Dos fuentes de búsqueda**: selector de **Fuente** en el formulario para alternar entre
+  **Open Library** (catálogo completo, metadatos) y **Project Gutenberg** (repositorio
+  opensource con libros digitales de dominio público).
+- **Descarga directa**: cuando la fuente es Project Gutenberg, cada resultado ofrece un
+  menú **Descargar** con los formatos disponibles (TXT, EPUB, MOBI/Kindle, PDF). Las
+  opciones de descarga también aparecen dentro de **Ver metadatos**.
 
 ## Tecnologías
 
@@ -108,6 +114,8 @@ Existen **dos formatos** de salida, ambos descargan un fichero `.json`:
 | Export JSON    | `downloadJson(data, nombre)`       | `src/utils/exportJson.js`     |
 | Export DC      | `toDublinCore` / `toDublinCoreList`| `src/utils/dublinCore.js`     |
 | Tema claro/oscuro | `useTheme` / `ThemeToggle`     | `src/hooks/useTheme.js`, `src/components/ThemeToggle.jsx` |
+| Búsqueda Gutenberg | `searchGutenberg(query)`     | `src/services/gutenberg.js`    |
+| Descarga        | `DownloadMenu` en tabla / modal   | `src/components/ResultsTable.jsx`, `src/components/BookDetail.jsx` |
 
 ## Puesta en marcha
 
@@ -117,6 +125,10 @@ npm run dev
 ```
 
 Abrir `http://localhost:5173` en el navegador.
+
+> **Nota sobre CORS:** Project Gutenberg se consulta a través de la API pública de
+> [Gutendex](https://gutendex.com/) (`https://gutendex.com/books/?search=...`), que expone
+> CORS y devuelve los enlaces directos de descarga de cada formato.
 
 ## Scripts
 
@@ -135,6 +147,15 @@ Abrir `http://localhost:5173` en el navegador.
 4. Usa **Descargar en JSON** en el modal para guardar el registro Dublin Core del libro.
 5. Usa **Guardar resultados en JSON** o **Guardar resultados en Dublin Core (JSON)**
    para descargar el fichero con todos los datos.
+
+### Descargar un libro digital (Proyecto Gutenberg)
+
+1. En el formulario, cambia **Fuente** a **Project Gutenberg**.
+2. Escribe un título o autor, por ejemplo `pride and prejudice`, y pulsa **Buscar**.
+3. En la columna **Descargar** de cada resultado, elige el formato (TXT, EPUB, MOBI/Kindle,
+   PDF) para abrir el enlace directo del archivo digital.
+4. Como alternativa, usa **Ver metadatos** → sección **Descargas** para ver y acceder a
+   todos los formatos.
 
 ## Flujo de trabajo (Git Branching)
 
