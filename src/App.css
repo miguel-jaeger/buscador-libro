@@ -228,6 +228,78 @@
   font-size: 12px;
 }
 
+.no-download {
+  color: var(--text);
+}
+
+.download-menu {
+  position: relative;
+  display: inline-block;
+}
+
+.download-menu summary {
+  list-style: none;
+  cursor: pointer;
+  display: inline-block;
+}
+
+.download-menu summary::-webkit-details-marker {
+  display: none;
+}
+
+.download-list {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 150px;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.download-list a {
+  display: block;
+  padding: 6px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  color: var(--text-h);
+  text-decoration: none;
+}
+
+.download-list a:hover {
+  background: var(--accent-bg);
+  color: var(--accent);
+}
+
+.download-section {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 14px;
+  margin-bottom: 14px;
+  background: var(--social-bg);
+}
+
+.download-section h4 {
+  margin: 0 0 6px;
+  font-size: 14px;
+  color: var(--text-h);
+}
+
+.download-section ul {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 14px;
+}
+
+.download-section a {
+  color: var(--accent);
+}
+
 .cover-thumb {
   width: 44px;
   height: 62px;
