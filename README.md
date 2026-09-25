@@ -14,9 +14,11 @@ completo de metadatos.
 
 - Búsqueda por **ISBN**, título, palabra clave, autor, editorial, materia, OCLC o LCCN.
 - Tabla de resultados con portada, título, autor(es), año, editorial, ISBN y páginas.
-- **Ver metadatos**: modal con el detalle completo del libro (autores, años, editoriales,
-  ISBNs, idiomas, materias, enlace a Open Library, etc.).
+- **Ver metadatos**: modal con el detalle completo del libro en formato **Dublin Core**
+  (los 15 elementos `dc:*`), listo para persistir en una base de datos.
 - **Guardar en JSON**: descarga el resultado de la búsqueda a un fichero `*.json`.
+- **Guardar en Dublin Core (JSON)**: descarga los resultados mapeados a los 15 elementos
+  Dublin Core (`dc:title`, `dc:creator`, `dc:subject`, `dc:date`, etc.).
 
 ## Tecnologías
 
@@ -45,8 +47,10 @@ Abrir `http://localhost:5173` en el navegador.
 
 1. Selecciona el campo **ISBN** y escribe `9780451524935` (1984, George Orwell).
 2. Pulsa **Buscar**; los resultados aparecen en la tabla.
-3. Usa **Ver metadatos** para inspeccionar el detalle completo.
-4. Usa **Guardar resultados en JSON** para descargar el fichero con los datos.
+3. Usa **Ver metadatos** para inspeccionar el detalle completo (elementos `dc:*`).
+4. Usa **Descargar en JSON** en el modal para guardar el registro Dublin Core del libro.
+5. Usa **Guardar resultados en JSON** o **Guardar resultados en Dublin Core (JSON)**
+   para descargar el fichero con todos los datos.
 
 ## Flujo de trabajo (Git Branching)
 
