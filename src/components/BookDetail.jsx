@@ -60,6 +60,29 @@ function BookDetail({ book, onClose }) {
               </a>
               .
             </p>
+
+            {book.downloadLinks && book.downloadLinks.length > 0 && (
+              <div className="download-section">
+                <h4>Descargas</h4>
+                <ul>
+                  {book.downloadLinks.map((link) => (
+                    <li key={link.mime}>
+                      <a href={link.url} target="_blank" rel="noreferrer">
+                        {link.format}
+                      </a>
+                    </li>
+                  ))}
+                  {book.url && (
+                    <li>
+                      <a href={book.url} target="_blank" rel="noreferrer">
+                        Página de Project Gutenberg
+                      </a>
+                    </li>
+                  )}
+                </ul>
+              </div>
+            )}
+
             <table className="metadata-table">
               <tbody>
                 {DUBLIN_CORE_ELEMENTS.map((element) => (

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import './App.css'
 import { searchBooks } from './services/openLibrary.js'
+import { searchGutenberg } from './services/gutenberg.js'
 import SearchForm from './components/SearchForm.jsx'
 import ResultsTable from './components/ResultsTable.jsx'
 import BookDetail from './components/BookDetail.jsx'
@@ -16,11 +17,14 @@ function App() {
   const [error, setError] = useState(null)
   const [selectedBook, setSelectedBook] = useState(null)
 
-  async function handleSearch(field, query) {
+  async function handleSearch(source, query, field) {
     setLoading(true)
     setError(null)
     try {
-      const data = await searchBooks(field, query)
+      const data =
+        source === 'gutenberg'
+          ? await searchGutenberg(query)
+          : await searchBooks(field, query)
       setResult(data)
     } catch (err) {
       setError(err.message)
@@ -55,11 +59,15 @@ function App() {
         </div>
         <h1>Buscador de libros</h1>
         <p>
-          Búsqueda de metadatos de libros mediante la API pública de{' '}
+          Búsqueda de metadatos de libros usando las API públicas de{' '}
           <a href="https://openlibrary.org/developers/api" target="_blank" rel="noreferrer">
             Open Library
+          </a>{' '}
+          y{' '}
+          <a href="https://www.gutenberg.org/" target="_blank" rel="noreferrer">
+            Project Gutenberg
           </a>
-          .
+          , con descarga directa de los libros digitales.
         </p>
       </header>
 

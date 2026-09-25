@@ -8,10 +8,38 @@ function formatIsbn(doc) {
   return primary ?? (doc.isbns.length > 0 ? doc.isbns[0] : '—')
 }
 
+function DownloadMenu({ doc }) {
+  const links = doc.downloadLinks ?? []
+  if (!links.length) return <span className="no-download">—</span>
+
+  return (
+    <details className="download-menu">
+      <summary className="btn btn-outline btn-sm">Descargar</summary>
+      <ul className="download-list">
+        {links.map((link) => (
+          <li key={link.mime}>
+            <a href={link.url} target="_blank" rel="noreferrer">
+              {link.format}
+            </a>
+          </li>
+        ))}
+        {doc.url && (
+          <li>
+            <a href={doc.url} target="_blank" rel="noreferrer">
+              Página del libro
+            </a>
+          </li>
+        )}
+      </ul>
+    </details>
+  )
+}
+
 function ResultsTable({ result, onView }) {
   if (!result) return null
 
   const hasResults = result.items.length > 0
+  const hasDownloads = result.items.some((doc) => (doc.downloadLinks ?? []).length > 0)
 
   return (
     <section className="results">
@@ -36,6 +64,7 @@ function ResultsTable({ result, onView }) {
                 <th>Editorial</th>
                 <th>ISBN</th>
                 <th>Páginas</th>
+                {hasDownloads && <th>Descargar</th>}
                 <th></th>
               </tr>
             </thead>
@@ -59,6 +88,11 @@ function ResultsTable({ result, onView }) {
                   <td>{doc.publishers[0] ?? '—'}</td>
                   <td className="isbn-cell">{formatIsbn(doc)}</td>
                   <td>{doc.pageCount ?? '—'}</td>
+                  {hasDownloads && (
+                    <td>
+                      <DownloadMenu doc={doc} />
+                    </td>
+                  )}
                   <td>
                     <button
                       type="button"
