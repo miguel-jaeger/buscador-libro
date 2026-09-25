@@ -1,16 +1,63 @@
-# React + Vite
+# Buscador de libros
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Aplicación web en **React** que permite buscar los metadatos de un libro a través de la
+API pública de [Open Library](https://openlibrary.org/developers/api), guardar el
+resultado en un fichero **JSON** y visualizarlo en una tabla con opción de ver el detalle
+completo de metadatos.
 
-Currently, two official plugins are available:
+> **Nota sobre la API:** se eligió Open Library en lugar de la API de la Biblioteca del
+> Congreso de los EE. UU. porque esta última bloquea las peticiones directas desde el
+> navegador (protección Cloudflare), mientras que Open Library expone CORS y ofrece
+> búsquedas por ISBN, título, autor, materia, OCLC, LCCN, entre otras.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Características
 
-## React Compiler
+- Búsqueda por **ISBN**, título, palabra clave, autor, editorial, materia, OCLC o LCCN.
+- Tabla de resultados con portada, título, autor(es), año, editorial, ISBN y páginas.
+- **Ver metadatos**: modal con el detalle completo del libro (autores, años, editoriales,
+  ISBNs, idiomas, materias, enlace a Open Library, etc.).
+- **Guardar en JSON**: descarga el resultado de la búsqueda a un fichero `*.json`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tecnologías
 
-## Expanding the Oxlint configuration
+- [Vite](https://vite.dev/) + [React](https://react.dev/)
+- API: [Open Library Search API](https://openlibrary.org/dev/docs/api/search)
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+## Puesta en marcha
+
+```bash
+npm install
+npm run dev
+```
+
+Abrir `http://localhost:5173` en el navegador.
+
+## Scripts
+
+| Comando       | Descripción                         |
+| ------------- | ----------------------------------- |
+| `npm run dev` | Servidor de desarrollo (HMR)        |
+| `npm run build` | Build de producción en `dist/`    |
+| `npm run lint`  | Análisis estático con oxlint      |
+| `npm run preview` | Previsualiza el build             |
+
+## Ejemplo de uso
+
+1. Selecciona el campo **ISBN** y escribe `9780451524935` (1984, George Orwell).
+2. Pulsa **Buscar**; los resultados aparecen en la tabla.
+3. Usa **Ver metadatos** para inspeccionar el detalle completo.
+4. Usa **Guardar resultados en JSON** para descargar el fichero con los datos.
+
+## Flujo de trabajo (Git Branching)
+
+Este proyecto sigue el modelo **feature branch workflow** de GitHub:
+
+```
+main
+ └── dev
+      └── feature/buscador-libro
+```
+
+- Cada funcionalidad se implementó y commiteó por separado en `feature/buscador-libro`.
+- La rama `feature` se integró a `dev` tras probar el build y la API.
+- `dev` se integró a `main` una vez validado.
