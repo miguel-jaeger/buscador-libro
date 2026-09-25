@@ -2,17 +2,27 @@ import { useEffect, useState } from 'react'
 
 const STORAGE_KEY = 'buscador-libro-theme'
 
+function isBrowser() {
+  return typeof window !== 'undefined'
+}
+
 function getSystemTheme() {
+  if (!isBrowser()) return 'light'
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
 }
 
 function getInitialTheme() {
-  const stored = localStorage.getItem(STORAGE_KEY)
-  return stored === 'light' || stored === 'dark' ? stored : getSystemTheme()
+  if (isBrowser()) {
+    const stored = localStorage.getItem(STORAGE_KEY)
+    if (stored === 'light' || stored === 'dark') return stored
+  }
+  return getSystemTheme()
 }
 
 function applyTheme(theme) {
-  document.documentElement.setAttribute('data-theme', theme)
+  if (isBrowser()) {
+    document.documentElement.setAttribute('data-theme', theme)
+  }
 }
 
 export function useTheme() {
@@ -20,7 +30,9 @@ export function useTheme() {
 
   useEffect(() => {
     applyTheme(theme)
-    localStorage.setItem(STORAGE_KEY, theme)
+    if (isBrowser()) {
+      localStorage.setItem(STORAGE_KEY, theme)
+    }
   }, [theme])
 
   function toggleTheme() {
