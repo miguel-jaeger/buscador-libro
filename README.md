@@ -115,6 +115,7 @@ Existen **dos formatos** de salida, ambos descargan un fichero `.json`:
 | Export DC      | `toDublinCore` / `toDublinCoreList`| `src/utils/dublinCore.js`     |
 | Tema claro/oscuro | `useTheme` / `ThemeToggle`     | `src/hooks/useTheme.js`, `src/components/ThemeToggle.jsx` |
 | Búsqueda Gutenberg | `searchGutenberg(query)`     | `src/services/gutenberg.js`    |
+| Proxy Gutenberg    | `gutenbergProxy()` (OPDS)      | `gutenberg-proxy.js`, `vite.config.js` |
 | Descarga        | `DownloadMenu` en tabla / modal   | `src/components/ResultsTable.jsx`, `src/components/BookDetail.jsx` |
 
 ## Puesta en marcha
@@ -126,9 +127,12 @@ npm run dev
 
 Abrir `http://localhost:5173` en el navegador.
 
-> **Nota sobre CORS:** Project Gutenberg se consulta a través de la API pública de
-> [Gutendex](https://gutendex.com/) (`https://gutendex.com/books/?search=...`), que expone
-> CORS y devuelve los enlaces directos de descarga de cada formato.
+> **Nota sobre CORS:** Project Gutenberg se consulta a través de su **catálogo OPDS**
+> (`https://www.gutenberg.org/ebooks/search.opds/?query=...`). El servidor de desarrollo
+> de Vite incluye un proxy (`/api/gutenberg`) que consulta Gutenberg desde el servidor,
+> por lo que las peticiones del navegador no sufren bloqueo CORS. Si el proxy no está
+> disponible (p. ej. `vite preview`), la app cae a la API pública de
+> [Gutendex](https://gutendex.com/) como alternativa.
 
 ## Scripts
 
