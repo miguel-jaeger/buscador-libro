@@ -1,9 +1,14 @@
+import { DUBLIN_CORE_ELEMENTS, toDublinCore } from '../utils/dublinCore.js'
+import downloadJson from '../utils/exportJson.js'
+
 function DetailRow({ label, value }) {
-  if (!value || (Array.isArray(value) && value.length === 0)) return null
-  const display = Array.isArray(value) ? value.join(', ') : value
+  if (value === null || value === undefined || value === '') return null
+  const display = Array.isArray(value) ? value.join(', ') : String(value)
   return (
     <tr>
-      <th>{label}</th>
+      <th>
+        <code>{label}</code>
+      </th>
       <td>{display}</td>
     </tr>
   )
@@ -12,14 +17,25 @@ function DetailRow({ label, value }) {
 function BookDetail({ book, onClose }) {
   if (!book) return null
 
+  const dc = toDublinCore(book)
+
+  function handleExportDc() {
+    downloadJson({ id: book.id, dc }, 'dublin-core')
+  }
+
   return (
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" role="dialog" aria-modal="true" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>Metadatos del libro</h2>
-          <button type="button" className="btn btn-outline" onClick={onClose}>
-            Cerrar
-          </button>
+          <div className="modal-actions">
+            <button type="button" className="btn btn-outline" onClick={handleExportDc}>
+              Descargar en JSON
+            </button>
+            <button type="button" className="btn btn-outline" onClick={onClose}>
+              Cerrar
+            </button>
+          </div>
         </div>
 
         <div className="modal-body">
@@ -33,29 +49,26 @@ function BookDetail({ book, onClose }) {
 
           <div className="metadata">
             <h3>{book.title}</h3>
+            <p className="metadata-note">
+              Metadatos listos para persistir, en formato{' '}
+              <a
+                href="https://www.dublincore.org/specifications/dublin-core/dcmi-terms/"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Dublin Core
+              </a>
+              .
+            </p>
             <table className="metadata-table">
               <tbody>
-                <DetailRow label="Autores" value={book.authors} />
-                <DetailRow label="Año de publicación" value={book.firstPublishYear} />
-                <DetailRow label="Años de ediciones" value={book.publishYears} />
-                <DetailRow label="Editoriales" value={book.publishers} />
-                <DetailRow label="ISBNs" value={book.isbns} />
-                <DetailRow label="Nº de páginas" value={book.pageCount} />
-                <DetailRow label="Idiomas" value={book.languages} />
-                <DetailRow label="Materias" value={book.subjects} />
-                <DetailRow label="Acceso e-book" value={book.ebookAccess} />
-                <DetailRow label="Nº de ediciones" value={book.editionCount} />
-                <DetailRow label="Identificador" value={book.id} />
-                {book.url && (
-                  <tr>
-                    <th>Enlace</th>
-                    <td>
-                      <a href={book.url} target="_blank" rel="noreferrer">
-                        Ver en Open Library
-                      </a>
-                    </td>
-                  </tr>
-                )}
+                {DUBLIN_CORE_ELEMENTS.map((element) => (
+                  <DetailRow
+                    key={element.key}
+                    label={element.key}
+                    value={dc[element.key]}
+                  />
+                ))}
               </tbody>
             </table>
           </div>
