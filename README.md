@@ -19,6 +19,8 @@ completo de metadatos.
 - **Guardar en JSON**: descarga el resultado de la búsqueda a un fichero `*.json`.
 - **Guardar en Dublin Core (JSON)**: descarga los resultados mapeados a los 15 elementos
   Dublin Core (`dc:title`, `dc:creator`, `dc:subject`, `dc:date`, etc.).
+- **Modo claro / oscuro**: botón en el encabezado que alterna el tema. La selección se
+  guarda en `localStorage` y el tema predeterminado sigue la preferencia del sistema.
 
 ## Tecnologías
 
@@ -105,6 +107,7 @@ Existen **dos formatos** de salida, ambos descargan un fichero `.json`:
 | Tabla/Detalle  | `ResultsTable`, `BookDetail`       | `src/components/*`            |
 | Export JSON    | `downloadJson(data, nombre)`       | `src/utils/exportJson.js`     |
 | Export DC      | `toDublinCore` / `toDublinCoreList`| `src/utils/dublinCore.js`     |
+| Tema claro/oscuro | `useTheme` / `ThemeToggle`     | `src/hooks/useTheme.js`, `src/components/ThemeToggle.jsx` |
 
 ## Puesta en marcha
 
