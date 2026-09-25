@@ -5,6 +5,7 @@ import SearchForm from './components/SearchForm.jsx'
 import ResultsTable from './components/ResultsTable.jsx'
 import BookDetail from './components/BookDetail.jsx'
 import downloadJson from './utils/exportJson.js'
+import { toDublinCoreList } from './utils/dublinCore.js'
 
 function App() {
   const [loading, setLoading] = useState(false)
@@ -29,6 +30,18 @@ function App() {
   function handleExport() {
     if (!result) return
     downloadJson(result, 'busqueda-libros')
+  }
+
+  function handleExportDublinCore() {
+    if (!result) return
+    const records = toDublinCoreList(result.items)
+    downloadJson(
+      {
+        schemas: ['http://purl.org/dc/elements/1.1/'],
+        records,
+      },
+      'busqueda-libros-dublin-core',
+    )
   }
 
   return (
@@ -57,6 +70,14 @@ function App() {
             disabled={!result}
           >
             Guardar resultados en JSON
+          </button>
+          <button
+            type="button"
+            className="btn btn-outline"
+            onClick={handleExportDublinCore}
+            disabled={!result}
+          >
+            Guardar resultados en Dublin Core (JSON)
           </button>
         </div>
 
